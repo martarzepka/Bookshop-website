@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Ksiegarnia.Models.Ksiazka>
+
+@{
+    ViewData["Title"] = "Katalog";
+}
+
+
+@foreach (var item in Model)
+{
+    <table>
+        <tbody>
+            <tr>
+                <td rowspan="2" width = "170">
+                    <img src="@Url.Content(item.Sciezka)" asp-append-version="true" width="150" height="200" />
+                </td>
+                <td valign="top">
+                    <font size="5"><a asp-action="Szczegoly" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Tytul)</a></font>
+                </td>
+            </tr>
+            <tr>
+                <td valign ="top" class="pl-3">
+                    @foreach (var c in ViewData["Ceny"] as IEnumerable<Cena>)
+                    {
+                        @if (c.KsiazkaId == item.Id && (c.DataOd <= DateTime.Today && (c.DataDo == DateTime.MinValue || c.DataDo >= DateTime.Today)))
+                        {
+                            <font size="5"><p>@String.Format("{0:N2}", c.Wartosc) zł</p></font>
+                        }
+                                
+                    }
+                </td>
+            </tr>
+    
+        </tbody>
+    </table>
+    <hr />
+}

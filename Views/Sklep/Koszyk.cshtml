@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Ksiegarnia.Models.PozycjaWKoszyku>
+
+@{
+    ViewData["Title"] = "Katalog";
+}
+
+<h2 style="text-align: center">Koszyk</h2>
+
+@if (@Model.Count() > 0)
+{
+    @foreach (var item in Model)
+    {
+        <hr />
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="2" width="170">
+                        <img src="@Url.Content(item.Ksiazka.Sciezka)" asp-append-version="true" width="150" height="200" />
+                    </td>
+                    <td columnspan="3" valign="top">
+                        <font size="5"><a asp-action="Szczegoly" asp-route-id="@item.Ksiazka.Id">@Html.DisplayFor(modelItem => item.Ksiazka.Tytul)</a></font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="500" align="right" valign="top">
+                        @if (item.Liczba > 1)
+                        {
+                            <a asp-action="Odejmij" class="btn btn-light" asp-route-id="@item.Ksiazka.Id"><i class="bi-dash" style="font-size: 80%"></i></a>
+                        }
+                        <font size="4">@Html.DisplayFor(modelItem => item.Liczba)
+                        </font>
+                        <a asp-action="Dodaj" class="btn btn-light" asp-route-id="@item.Ksiazka.Id"><i class="bi-plus" style="font-size: 80%"></i></a>
+                    </td>
+                    <td width="150" align="center" valign="top">
+                        @foreach (var c in ViewData["Ceny"] as IEnumerable<Cena>)
+                        {
+                            @if (c.KsiazkaId == item.Ksiazka.Id && (c.DataOd <= DateTime.Today && (c.DataDo == DateTime.MinValue || c.DataDo >= DateTime.Today)))
+                            {
+                                <font size="4"><p>@String.Format("{0:N2}", c.Wartosc) zł</p></font>
+                            }
+                        }
+                    </td>
+                    <td width="100" align="center" valign="top">
+                        <a asp-action="Usun" class="btn btn-light" asp-route-id="@item.Ksiazka.Id"><i class="bi-trash" style="font-size: 120%"></i></a>
+                    </td>
+                    <td width="100" align="center" valign="top">
+                        @if(item.Ksiazka.Dostepnosc<1)
+                        {
+                            <p style="color:red">Produkt niedostępny</p>
+                        }
+                        else
+                        {
+                            if (item.Liczba > item.Ksiazka.Dostepnosc)
+                            {
+                                <p style="color:red">Za mało produktów w magazynie</p>
+                            }
+                        }
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    }
+    <hr />
+    <h3 style="text-align: center">Do zapłaty: @ViewBag.Suma zł</h3>
+    <br>
+    <h3 style="text-align: center"><a asp-action="Koszyk" class="btn btn-secondary">Złóż zamówienie</a></h3>
+}
+else
+{
+    <hr />
+    <h2 style="text-align: center; margin-top: 50px;">Twój koszyk jest pusty</h2>
+}

@@ -1,0 +1,62 @@
+﻿@model Ksiegarnia.Models.Ksiazka
+
+@{
+    ViewData["Title"] = "Szczegoly";
+}
+
+<div class="widokKsiazki">
+    <table>
+        <tr>
+            @if (@TempData["Powiadomienie"] != null)
+            {
+                <div class="alert alert-success">@TempData["Powiadomienie"]</div>
+            }
+        </tr>
+        <tr>
+            <td width = "400">
+                <img src="@Url.Content(Model.Sciezka)" asp-append-version="true" width="360" height="480" />
+            </td>
+            <td valign="top" width="400">
+                <font size="6">@Html.DisplayFor(model => model.Tytul)</font>
+                <br><br><br>
+                <strong>@Html.DisplayNameFor(model => model.KsiazkaAutor):</strong>
+                <br>
+                @foreach (var item in ViewData["Autorzy"] as IEnumerable<Autor>)
+                {
+                    <div style="text-indent:20px">@item.Imie @item.Nazwisko</div>
+                }
+                <br>
+                <strong>@Html.DisplayNameFor(model => model.KsiazkaKategoria):</strong>
+                <br>
+                @foreach (var item in ViewData["Kategorie"] as IEnumerable<Kategoria>)
+                {
+                    <div style="text-indent:20px">@item.Nazwa</div>
+                }
+                <br>
+                <strong>@Html.DisplayNameFor(model => model.Opis):</strong>
+                <br>
+                @Html.DisplayFor(model => model.Opis)
+            </td>
+            <td width ="300" align="center">
+                <strong>@Html.DisplayNameFor(model => model.Cena):</strong>
+                @ViewData["Cena"] zł
+                <br><br>
+                @if (Model.Dostepnosc < 1)
+                {
+                    <p style="color:red">Produkt niedostępny</p>
+                }
+                else
+                {
+                    <strong>@Html.DisplayNameFor(model => model.Dostepnosc):</strong>
+                    @Html.DisplayFor(model => model.Dostepnosc)
+                }
+                <br><br><br>
+                <a asp-action="Dodaj" class="btn btn-secondary" asp-route-id="@Model.Id">Dodaj do koszyka</a>
+
+            </td>
+        </tr>
+    </table>
+    
+    
+    
+</div>
